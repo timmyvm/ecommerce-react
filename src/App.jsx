@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
+import ProductPage from "./components/ProductPage";
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -35,12 +36,13 @@ const App = () => {
       <Router>
         <Nav />
         <Routes>
-          <Route path="/products" element={<ProductsPage/>} />
-          <Route path="/" element={<HomePage/>} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
         </Routes>
       </Router>
-      <Newsletter />  
-      <Footer /> 
+      <Newsletter />
+      <Footer />
     </AppContext.Provider>
   );
 };

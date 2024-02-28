@@ -1,5 +1,6 @@
 import React from "react";
 import BannerOne from "../assets/banner-1.jpg"
+import { Link } from "react-router-dom";
 
 const Banner1 = () => {
   return (
@@ -15,7 +16,7 @@ const Banner1 = () => {
                 ROAFU Products ar all made to the standard sizes so that you can
                 easily mix and match them freely.
               </p>
-              <a href="/products" className="banner__text__btn">Shop now</a>
+              <Link to="/products" className="banner__text__btn">Shop now</Link>
             </div>
             <img src={BannerOne} alt="" className="banner__img" />
           </div>
