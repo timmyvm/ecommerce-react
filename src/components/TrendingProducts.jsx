@@ -4,6 +4,7 @@ import ProductSkeleton from "./ui/ProductSkeleton";
 import Product from "./ui/Product"
 
 const TrendingProducts = () => {
+  
   const { products } = useContext(AppContext);
 
   return (

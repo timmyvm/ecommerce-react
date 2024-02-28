@@ -11,6 +11,7 @@ import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import ProductsPage from "./pages/ProductsPage";
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -34,7 +35,7 @@ const App = () => {
       <Router>
         <Nav />
         <Routes>
-          <Route path="/products" element="" />
+          <Route path="/products" element={<ProductsPage/>} />
           <Route path="/" element={<HomePage/>} />
         </Routes>
       </Router>
