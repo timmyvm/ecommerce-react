@@ -3,95 +3,154 @@ import { AppContext } from "../Context/AppContext";
 import Product from "../components/ui/Product";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import ProductSkeleton from "./ui/ProductSkeleton";
+import ProductPageSkeleton from "./ProductPageSkeleton";
+import SuccsessPopup from "./ui/SuccsessPopup";
 
 const ProductPage = () => {
-  const { products } = useContext(AppContext);
-  const { id } = useParams();
+  const { products, addToCart } = useContext(AppContext);
+  const { id } = useParams(null);
   const [selectedProduct, setSelectedProduct] = useState();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   async function fetchProduct() {
-    const { data } = await axios.get(
-      `https://ecommerce-samurai.up.railway.app/product/${id}`
-    );
+    try {
+      const { data } = await axios.get(
+        `https://ecommerce-samurai.up.railway.app/product/${id}`
+      );
 
-    const productData = data.data;
+      const productData = data.data;
 
-    setSelectedProduct(productData);
+      setSelectedProduct(productData);
+
+      setSelectedImage(productData.images[0]);
+
+      setLoading(false);
+    } catch (error) {
+      alert(error);
+    }
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchProduct();
-  }, []);
+    setLoading(true);
+  }, [id]);
 
   return (
     <main className="products__main">
+      <SuccsessPopup/>
       <div className="container">
-        <row className="row product-page__row">
-          <div className="selected-product">
-            <div className="selected-product__left">
-              <figure className="selected-product__img__wrapper">
-                <img
-                  src={`https://ecommerce-samurai.up.railway.app/${selectedProduct?.images[0]}`}
-                  alt=""
-                  className="selected-product__img"
-                />
-              </figure>
-              <div className="selected-product__img__options">
-                {selectedProduct?.images.map((image) => (
-                  <img
-                    src={`https://ecommerce-samurai.up.railway.app/${image}`}
-                    alt=""
-                    className="selected-product__img__option"
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="selected-product__right">
-              <h1 className="selected-product__title">
-                {selectedProduct?.name}
-              </h1>
-              <p className="selected-product__para">
-                {selectedProduct?.description}
-              </p>
-              <div className="selected-product__quantity">
-                <span className="selected-product__quantity__span selected-product__quantity__span-1">
-                  Quantity
-                </span>
-                <div className="selected-product__quantity__wrapper">
-                  <button className="selected-product__quantity__btn">-</button>
-                  <div className="selected-product__quantity__amount">1</div>
-                  <button className="selected-product__quantity__btn">+</button>
+        <div className="row product-page__row">
+          {loading ? (
+            <ProductPageSkeleton />
+          ) : (
+            <>
+              <div className="selected-product">
+                <div className="selected-product__left">
+                  <figure className="selected-product__img__wrapper">
+                    <img
+                      src={`https://ecommerce-samurai.up.railway.app/${selectedImage}`}
+                      alt=""
+                      className="selected-product__img"
+                    />
+                  </figure>
+                  <div className="selected-product__img__options">
+                    {selectedProduct?.images.map((image, index) => (
+                      <img
+                        src={`https://ecommerce-samurai.up.railway.app/${image}`}
+                        alt=""
+                        onClick={() => setSelectedImage(image)}
+                        className="selected-product__img__option"
+                        key={index}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <span className="selected-product__quantity__span selected-product__quantity__span-2">
-                  ${selectedProduct?.price}
-                </span>
+                <div className="selected-product__right">
+                  <h1 className="selected-product__title">
+                    {selectedProduct?.name}
+                  </h1>
+                  <p className="selected-product__para">
+                    {selectedProduct?.description}
+                  </p>
+                  <div className="selected-product__quantity">
+                    <span className="selected-product__quantity__span selected-product__quantity__span-1">
+                      Quantity
+                    </span>
+                    <div className="selected-product__quantity__wrapper">
+                      <button
+                        className="selected-product__quantity__btn"
+                        onClick={() =>
+                          setQuantity((prevQuantity) =>
+                            prevQuantity > 1 ? prevQuantity - 1 : prevQuantity
+                          )
+                        }
+                      >
+                        -
+                      </button>
+                      <div className="selected-product__quantity__amount">
+                        {quantity}
+                      </div>
+                      <button
+                        className="selected-product__quantity__btn"
+                        onClick={() =>
+                          setQuantity((prevQuantity) => prevQuantity + 1)
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                    <span className="selected-product__quantity__span selected-product__quantity__span-2">
+                      ${selectedProduct?.price * quantity}
+                    </span>
+                  </div>
+                  <button
+                    className="selected-product__add"
+                    onClick={() => addToCart(selectedProduct, quantity)}
+                  >
+                    Add to cart
+                  </button>
+                </div>
               </div>
-              <button className="selected-product__add">Add to cart</button>
-            </div>
-          </div>
-          <div className="specifications">
-            <div className="spec">
-              <h2 className="spec__title">Weight</h2>
-              <span className="spec__detail">{selectedProduct?.weight}</span>
-            </div>
-            <div className="spec">
-              <h2 className="spec__title">Texture</h2>
-              <span className="spec__detail">{selectedProduct?.texture}</span>
-            </div>
-            <div className="spec">
-              <h2 className="spec__title">Size</h2>
-              <span className="spec__detail">{selectedProduct?.size}</span>
-            </div>
-          </div>
+              <div className="specifications">
+                <div className="spec">
+                  <h2 className="spec__title">Weight</h2>
+                  <span className="spec__detail">
+                    {selectedProduct?.weight}
+                  </span>
+                </div>
+                <div className="spec">
+                  <h2 className="spec__title">Texture</h2>
+                  <span className="spec__detail">
+                    {selectedProduct?.texture}
+                  </span>
+                </div>
+                <div className="spec">
+                  <h2 className="spec__title">Size</h2>
+                  <span className="spec__detail">{selectedProduct?.size}</span>
+                </div>
+              </div>
+            </>
+          )}
           <div className="reccomendations">
             <h2 className="products__title">Trending Now</h2>
             <div className="products__list">
-              {products.slice(0, 4).map((product) => (
-                <Product product={product} key={product.id} />
-              ))}
+              {products.length > 0
+                ? products
+                    .filter((product) => product.id !== selectedProduct.id)
+                    .slice(0, 4)
+                    .map((product) => (
+                      <Product product={product} key={product.id} />
+                    ))
+                : new Array(4).fill(0).map((_, index) => {
+                    <ProductSkeleton key={index} />;
+                  })}
             </div>
           </div>
-        </row>
+        </div>
       </div>
     </main>
   );
