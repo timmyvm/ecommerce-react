@@ -17,6 +17,10 @@ const ProductsPage = () => {
     setFilteredProducts(filterProductsList)
   }, [filter]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <section id="all-products">

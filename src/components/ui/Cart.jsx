@@ -90,7 +90,14 @@ const Cart = ({ cartOpen, setCartOpen }) => {
             <h4 className="cart__footer__title">Subtotal</h4>
             <span className="cart__footer__subtotal">$ {Subtotal()} </span>
           </div>
-          <button className="cart__footer__btn">Go to Checkout</button>
+          <button
+            className="cart__footer__btn"
+            onClick={() => {
+              alert("We have not implemented this feature yet!");
+            }}
+          >
+            Go to Checkout
+          </button>
         </div>
       </nav>
     </div>

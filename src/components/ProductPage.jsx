@@ -10,10 +10,11 @@ import SuccsessPopup from "./ui/SuccsessPopup";
 const ProductPage = () => {
   const { products, addToCart } = useContext(AppContext);
   const { id } = useParams(null);
-  const [selectedProduct, setSelectedProduct] = useState();
+  const [selectedProduct, setSelectedProduct] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [successOpen, setSuccessOpen] = useState(false);
 
   async function fetchProduct() {
     try {
@@ -33,6 +34,14 @@ const ProductPage = () => {
     }
   }
 
+  function openSuccess() {
+    setSuccessOpen(true);
+
+    setTimeout(() => {
+      setSuccessOpen(false);
+    }, 1500);
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchProduct();
@@ -41,7 +50,7 @@ const ProductPage = () => {
 
   return (
     <main className="products__main">
-      <SuccsessPopup/>
+      <SuccsessPopup successOpen={successOpen} />
       <div className="container">
         <div className="row product-page__row">
           {loading ? (
@@ -109,7 +118,10 @@ const ProductPage = () => {
                   </div>
                   <button
                     className="selected-product__add"
-                    onClick={() => addToCart(selectedProduct, quantity)}
+                    onClick={() => {
+                      addToCart(selectedProduct, quantity);
+                      openSuccess();
+                    }}
                   >
                     Add to cart
                   </button>
@@ -140,14 +152,17 @@ const ProductPage = () => {
             <div className="products__list">
               {products.length > 0
                 ? products
-                    .filter((product) => product.id !== selectedProduct.id)
+                    .filter(
+                      (product) =>
+                        selectedProduct && product.id !== selectedProduct.id
+                    )
                     .slice(0, 4)
                     .map((product) => (
                       <Product product={product} key={product.id} />
                     ))
-                : new Array(4).fill(0).map((_, index) => {
-                    <ProductSkeleton key={index} />;
-                  })}
+                : Array.from({ length: 4 }, (_, index) => (
+                    <ProductSkeleton key={index} />
+                  ))}
             </div>
           </div>
         </div>

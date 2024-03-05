@@ -51,10 +51,6 @@ const App = () => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   }
 
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
-
   function cartLength() {
     let counter = 0;
 
